@@ -4,7 +4,8 @@
   "description": "A CLI for updating the version numbers of files",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test-watch": "npm run test -- --watch"
   },
   "directories": {
     "test": "test",
@@ -23,5 +24,8 @@
     "type": "git",
     "url": "https://github.com/eowino/version-cli"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^22.4.2"
+  }
 }
