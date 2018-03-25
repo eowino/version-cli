@@ -27,5 +27,10 @@
   "license": "MIT",
   "devDependencies": {
     "jest": "^22.4.2"
+  },
+  "dependencies": {
+    "chalk": "^2.3.2",
+    "minimist": "^1.2.0",
+    "semver": "^5.5.0"
   }
 }
