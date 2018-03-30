@@ -1,7 +1,10 @@
 const fs = require('fs');
 const path = require('path');
-const args = require('minimist')(process.argv.slice(2), require('./features'));
-const logging = require('./logging');
+
+const features = require('./features');
+const args = require('minimist')(process.argv.slice(2), features.minimistArgs);
+const log = require('./logging');
+const util = require('./utilities');
 
 const cwd = process.cwd();
 const rootPath = `${__dirname}/../`;
@@ -10,40 +13,56 @@ const filesFound = argsFiles.map(filename => `${path.join(cwd, filename)}`);
 
 const help = function help() {
   const README = fs.readFileSync(`${rootPath}README.md`, 'utf-8').trim();
-  console.log(`\n${README}`);
+  log.log(`\n${README}`);
   process.exit();
 };
 
 const version = function version() {
   const { version } = require(`${rootPath}package.json`);
-  console.log(`\nv${version}`);
+  log.log(`\nv${version}`);
   process.exit();
+};
+
+const getReleaseType = function getReleaseType() {
+  let releaseType = features.semver.find(type => args[type] === true);
+  
+  if (releaseType === 'pre') releaseType = 'prerelease';
+  if (!releaseType) releaseType = 'patch';
+
+  return releaseType;
 };
 
 const getPath = function getPath(filename = '') {
   return `${path.join(cwd, filename)}`;
 };
 
-const checkForInvalidFiles = function checkForInvalidFiles() {
-  argsFiles.some(file => {
-    const path = getPath(file);
+const checkForInvalidFile = function checkForInvalidFile() {
+  try {
+    fs.statSync(argsFiles[0]);
+  } catch (error) {
+    log.log(log.danger(`\n${error}`));
+    process.exit();
+  }
+};
 
-    fs.stat(path, (err, stat) => {
-      if (err) {
-        logging.danger(`\n${err}`);
-        return true;
-      }
-    });
-
-    return false;
+const getVersionFromFile = function getVersionFromFile() {
+  argsFiles.forEach(file => {
+    const version = util.getVersion(file);
+    const nextVersion = util.nextVersion(version, getReleaseType());
+    
+    // if version and nextVersion are valid
+    if (version && nextVersion) {
+      util.logBumpInfo(file, version, nextVersion);
+    }
   });
 };
 
 if (args.version) version();
 if (args.help || argsFiles.length === 0) help();
 
-checkForInvalidFiles();
+checkForInvalidFile();
+getVersionFromFile();
 
-// console.log(argsFiles);
-// console.log(filesFound)
-// console.log(args);
+// log.log(argsFiles);
+// log.log(filesFound)
+// log.log(args);
