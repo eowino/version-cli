@@ -1,24 +1,42 @@
-const getVersionFromString = function getVersionFromString(str = '') {
-  if (str.length < 1) return -1;
-  const versionPosition = str.indexOf('v=');
-  // skip the ?v= and get the rest of the string
-  return str.substr(versionPosition + 2).split('');
+const qr = require('query-string');
+const semver = require('semver');
+
+const log = require('./logging');
+
+const getVersionFromString = (version = '') => qr.parseUrl(version).query['v'];
+
+const versionIsValid = (version = '') => semver.valid(version);
+
+const getVersion = function getVersion(filename = '') {
+  let version = getVersionFromString(filename);
+
+  if (version === undefined) {
+    version = null;
+  } else if (!versionIsValid(version)) {
+    const coerceObj = semver.coerce(version);
+
+    if (coerceObj) {
+      version = coerceObj.version;
+    }
+  }
+
+  // returns null if version could not be procured
+  return version;
 };
 
-const getCurrentVersion = function getCurrentVersion(str = []) {
-  const currentVersion = [];
+const nextVersion = function nextVersion(version, releaseType) {
+  return semver.inc(version, releaseType);
+};
 
-  for (let i = 0; i < str.length; i++) {
-    if (!Number.isInteger(+str[i])) {
-      return +currentVersion.join('');
-    }
-
-    currentVersion.push(str[i]);
-  }
-  return +currentVersion.join('');
+const logBumpInfo = function logBumpInfo(filename, version, nextVersion) {
+  log.log(log.bold(`\n${filename}`));
+  log.log(`\tCurrent version:  ${log.dangerU(version)}`)
+  log.log(`\tNext version:     ${log.successU(nextVersion)}\n`)
 };
 
 module.exports = {
-  getVersionFromString,
-  getCurrentVersion
+  getVersion,
+  nextVersion,
+  versionIsValid,
+  logBumpInfo
 };
