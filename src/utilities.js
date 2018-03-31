@@ -8,7 +8,7 @@ const getVersionFromString = (version = '') => qr.parseUrl(version).query['v'];
 const versionIsValid = (version = '') => semver.valid(version);
 
 const getVersion = function getVersion(filename = '') {
-  let version = getVersionFromString(filename);
+  let version = getVersionFromString(filename.toString());
 
   if (version === undefined) {
     version = null;
