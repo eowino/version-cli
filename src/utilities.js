@@ -34,9 +34,16 @@ const logBumpInfo = function logBumpInfo(filename, version, nextVersion) {
   log.log(`\tNext version:     ${log.successU(nextVersion)}\n`)
 };
 
+const getNewFileName = function getNewFileName(fileObject) {
+  const {url, query} = qr.parseUrl(fileObject.filename);
+  query['v'] = fileObject.nextVersion;
+  return `${url}?${qr.stringify(query)}`;
+}
+
 module.exports = {
   getVersion,
   nextVersion,
   versionIsValid,
-  logBumpInfo
+  logBumpInfo,
+  getNewFileName
 };

@@ -1,6 +1,5 @@
 ## TODO
 
-handle the following flags:
-    --trial, -l    
-    --yes, -y 
-    --silent, -s 
+change renameFiles to be sync so that you can print 'task complete' and call process.exit() when all files have been updated.
+
+flag for converting a file with a version to start using semver

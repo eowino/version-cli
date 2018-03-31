@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const readline = require('readline');
 
 const features = require('./features');
 const args = require('minimist')(process.argv.slice(2), features.minimistArgs);
@@ -9,7 +10,15 @@ const util = require('./utilities');
 const cwd = process.cwd();
 const rootPath = `${__dirname}/../`;
 const argsFiles = args._;
-const filesFound = argsFiles.map(filename => `${path.join(cwd, filename)}`);
+const _toVersion = argsFiles[argsFiles.length - 1];
+let _filesToChange = [];
+const filesFound = argsFiles.map(
+  filename => `${path.join(cwd, filename.toString())}`
+);
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
 const help = function help() {
   const README = fs.readFileSync(`${rootPath}README.md`, 'utf-8').trim();
@@ -25,7 +34,7 @@ const version = function version() {
 
 const getReleaseType = function getReleaseType() {
   let releaseType = features.semver.find(type => args[type] === true);
-  
+
   if (releaseType === 'pre') releaseType = 'prerelease';
   if (!releaseType) releaseType = 'patch';
 
@@ -45,15 +54,56 @@ const checkForInvalidFile = function checkForInvalidFile() {
   }
 };
 
-const getVersionFromFile = function getVersionFromFile() {
-  argsFiles.forEach(file => {
-    const version = util.getVersion(file);
-    const nextVersion = util.nextVersion(version, getReleaseType());
-    
+const getVersionFromFile = function getVersionFromFile(toVersion) {
+  argsFiles.forEach(filename => {
+    const version = util.getVersion(filename);
+    const nextVersion =
+      toVersion || util.nextVersion(version, getReleaseType());
+
     // if version and nextVersion are valid
     if (version && nextVersion) {
-      util.logBumpInfo(file, version, nextVersion);
+      _filesToChange.push({
+        filename,
+        version,
+        nextVersion
+      });
+
+      if (!args.silent) {
+        util.logBumpInfo(filename, version, nextVersion);
+      }
     }
+  });
+};
+
+const getNewFileName = function getNewFileName(fileObject) {
+  const {url, query} = qr.parseUrl(fileObject.filename);
+  query['v'] = fileObject.nextVersion;
+  return `${url}?${qr.stringify(query)}`;
+};
+
+const renameFiles = function renameFiles() {
+  _filesToChange.forEach(file => {
+    const oldPath = file.filename;
+    const newPath = util.getNewFileName(file);
+
+    fs.rename(oldPath, newPath, err => {
+      if (err) {
+        log.danger(err);
+      }
+    });
+  });
+};
+
+const promptToContinue = function promptToContinue() {
+  rl.question('Do you want to continue [Y/n]? ', (answer) => {
+    if (answer.toLowerCase() === 'y' || !answer) {
+      renameFiles();
+    } else {
+      log.log('\nExiting without doing anything.')
+      process.exit();
+    }
+  
+    rl.close();
   });
 };
 
@@ -61,8 +111,20 @@ if (args.version) version();
 if (args.help || argsFiles.length === 0) help();
 
 checkForInvalidFile();
-getVersionFromFile();
 
-// log.log(argsFiles);
-// log.log(filesFound)
-// log.log(args);
+if (args.trial) {
+  getVersionFromFile();
+  process.exit();
+}
+
+if (args.to) {
+  getVersionFromFile(_toVersion);
+} else {
+  getVersionFromFile();
+}
+
+if (args.yes) {
+  renameFiles();
+} else {
+  promptToContinue();
+}
