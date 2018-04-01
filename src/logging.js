@@ -1,5 +1,6 @@
 const chalk = require('chalk');
 
+/* eslint-disable no-console */
 const log = console.log;
 
 const success = function success(str) {
@@ -12,11 +13,11 @@ const danger = function danger(str) {
 
 const bold = function bold(str) {
   return chalk.bold(str);
-}
+};
 
 const underline = function underline(str) {
   return chalk.underline(str);
-}
+};
 
 const dangerU = function dangerU(str) {
   return underline(danger(str));

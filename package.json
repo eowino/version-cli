@@ -12,7 +12,8 @@
   },
   "scripts": {
     "test": "jest",
-    "test-watch": "npm run test -- --watch"
+    "test-watch": "npm run test -- --watch",
+    "lint": "eslint ./src/* ./bin/version"
   },
   "directories": {
     "test": "test",
@@ -32,6 +33,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "eslint": "^4.19.1",
     "jest": "^22.4.2"
   },
   "dependencies": {

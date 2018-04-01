@@ -30,15 +30,15 @@ const nextVersion = function nextVersion(version, releaseType) {
 
 const logBumpInfo = function logBumpInfo(filename, version, nextVersion) {
   log.log(log.bold(`\n${filename}`));
-  log.log(`\tCurrent version:  ${log.dangerU(version)}`)
-  log.log(`\tNext version:     ${log.successU(nextVersion)}\n`)
+  log.log(`\tCurrent version:  ${log.dangerU(version)}`);
+  log.log(`\tNext version:     ${log.successU(nextVersion)}\n`);
 };
 
 const getNewFileName = function getNewFileName(fileObject) {
-  const {url, query} = qr.parseUrl(fileObject.filename);
+  const { url, query } = qr.parseUrl(fileObject.filename);
   query['v'] = fileObject.nextVersion;
   return `${url}?${qr.stringify(query)}`;
-}
+};
 
 module.exports = {
   getVersionFromString,

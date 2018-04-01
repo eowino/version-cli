@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 const fs = require('fs');
-const path = require('path');
 const readline = require('readline');
 
 const features = require('../src/features');
@@ -8,14 +7,10 @@ const args = require('minimist')(process.argv.slice(2), features.minimistArgs);
 const log = require('../src/logging');
 const util = require('../src/utilities');
 
-const cwd = process.cwd();
 const rootPath = `${__dirname}/../`;
 const argsFiles = args._;
 const _toVersion = argsFiles[argsFiles.length - 1];
 let _filesToChange = [];
-const filesFound = argsFiles.map(
-  filename => `${path.join(cwd, filename.toString())}`
-);
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
@@ -40,10 +35,6 @@ const getReleaseType = function getReleaseType() {
   if (!releaseType) releaseType = 'patch';
 
   return releaseType;
-};
-
-const getPath = function getPath(filename = '') {
-  return `${path.join(cwd, filename)}`;
 };
 
 const checkForInvalidFile = function checkForInvalidFile() {
@@ -76,12 +67,6 @@ const getVersionFromFile = function getVersionFromFile(toVersion) {
   });
 };
 
-const getNewFileName = function getNewFileName(fileObject) {
-  const {url, query} = qr.parseUrl(fileObject.filename);
-  query['v'] = fileObject.nextVersion;
-  return `${url}?${qr.stringify(query)}`;
-};
-
 const renameFiles = function renameFiles() {
   _filesToChange.forEach(file => {
     const oldPath = file.filename;
@@ -90,7 +75,7 @@ const renameFiles = function renameFiles() {
     try {
       fs.renameSync(oldPath, newPath);
     } catch (error) {
-      log.danger(err);
+      log.danger(error);
     }
   });
 
@@ -99,14 +84,14 @@ const renameFiles = function renameFiles() {
 };
 
 const promptToContinue = function promptToContinue() {
-  rl.question('Do you want to continue [Y/n]? ', (answer) => {
+  rl.question('Do you want to continue [Y/n]? ', answer => {
     if (answer.toLowerCase() === 'y' || !answer) {
       renameFiles();
     } else {
-      log.log('\nExiting without doing anything.')
+      log.log('\nExiting without doing anything.');
       process.exit();
     }
-  
+
     rl.close();
   });
 };
