@@ -86,12 +86,15 @@ const renameFiles = function renameFiles() {
     const oldPath = file.filename;
     const newPath = util.getNewFileName(file);
 
-    fs.rename(oldPath, newPath, err => {
-      if (err) {
-        log.danger(err);
-      }
-    });
+    try {
+      fs.renameSync(oldPath, newPath);
+    } catch (error) {
+      log.danger(err);
+    }
   });
+
+  log.log(log.success('\nDone ✔'));
+  process.exit();
 };
 
 const promptToContinue = function promptToContinue() {
