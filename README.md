@@ -1,13 +1,12 @@
 # version-cli
 
-A CLI for updating the version numbers of files
+[![npm version](https://badge.fury.io/js/version-cli.svg)](https://npmjs.org/package/version-cli "View this project on npm")
+
+A CLI for updating the version numbers of files using the semver guidelines.
 
 ## Prerequisites
 
 This CLI requires Node 6.0.0 or higher.
-
-[![npm version](https://badge.fury.io/js/version-cli.svg)](https://npmjs.org/package/version-cli "View this project on npm")
-
 
 ## Installation
 

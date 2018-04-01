@@ -1,0 +1,134 @@
+#!/usr/bin/env node
+const fs = require('fs');
+const path = require('path');
+const readline = require('readline');
+
+const features = require('../src/features');
+const args = require('minimist')(process.argv.slice(2), features.minimistArgs);
+const log = require('../src/logging');
+const util = require('../src/utilities');
+
+const cwd = process.cwd();
+const rootPath = `${__dirname}/../`;
+const argsFiles = args._;
+const _toVersion = argsFiles[argsFiles.length - 1];
+let _filesToChange = [];
+const filesFound = argsFiles.map(
+  filename => `${path.join(cwd, filename.toString())}`
+);
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+const help = function help() {
+  const README = fs.readFileSync(`${rootPath}README.md`, 'utf-8').trim();
+  log.log(`\n${README}`);
+  process.exit();
+};
+
+const version = function version() {
+  const { version } = require(`${rootPath}package.json`);
+  log.log(`\nv${version}`);
+  process.exit();
+};
+
+const getReleaseType = function getReleaseType() {
+  let releaseType = features.semver.find(type => args[type] === true);
+
+  if (releaseType === 'pre') releaseType = 'prerelease';
+  if (!releaseType) releaseType = 'patch';
+
+  return releaseType;
+};
+
+const getPath = function getPath(filename = '') {
+  return `${path.join(cwd, filename)}`;
+};
+
+const checkForInvalidFile = function checkForInvalidFile() {
+  try {
+    fs.statSync(argsFiles[0]);
+  } catch (error) {
+    log.log(log.danger(`\n${error}`));
+    process.exit();
+  }
+};
+
+const getVersionFromFile = function getVersionFromFile(toVersion) {
+  argsFiles.forEach(filename => {
+    const version = util.getVersion(filename);
+    const nextVersion =
+      toVersion || util.nextVersion(version, getReleaseType());
+
+    // if version and nextVersion are valid
+    if (version && nextVersion) {
+      _filesToChange.push({
+        filename,
+        version,
+        nextVersion
+      });
+
+      if (!args.silent) {
+        util.logBumpInfo(filename, version, nextVersion);
+      }
+    }
+  });
+};
+
+const getNewFileName = function getNewFileName(fileObject) {
+  const {url, query} = qr.parseUrl(fileObject.filename);
+  query['v'] = fileObject.nextVersion;
+  return `${url}?${qr.stringify(query)}`;
+};
+
+const renameFiles = function renameFiles() {
+  _filesToChange.forEach(file => {
+    const oldPath = file.filename;
+    const newPath = util.getNewFileName(file);
+
+    try {
+      fs.renameSync(oldPath, newPath);
+    } catch (error) {
+      log.danger(err);
+    }
+  });
+
+  log.log(log.success('\nDone ✔'));
+  process.exit();
+};
+
+const promptToContinue = function promptToContinue() {
+  rl.question('Do you want to continue [Y/n]? ', (answer) => {
+    if (answer.toLowerCase() === 'y' || !answer) {
+      renameFiles();
+    } else {
+      log.log('\nExiting without doing anything.')
+      process.exit();
+    }
+  
+    rl.close();
+  });
+};
+
+if (args.version) version();
+if (args.help || argsFiles.length === 0) help();
+
+checkForInvalidFile();
+
+if (args.trial) {
+  getVersionFromFile();
+  process.exit();
+}
+
+if (args.to) {
+  getVersionFromFile(_toVersion);
+} else {
+  getVersionFromFile();
+}
+
+if (args.yes) {
+  renameFiles();
+} else {
+  promptToContinue();
+}
