@@ -1,5 +1,7 @@
 # version-cli
 
+<img width="524" alt="version-cli usage" src="https://user-images.githubusercontent.com/9787512/38177470-1b409b12-35fa-11e8-854d-10baef0fb8de.png">
+
 [![npm version](https://badge.fury.io/js/version-cli.svg)](https://npmjs.org/package/version-cli "View this project on npm") 
 
 A CLI for updating the version numbers of files using the semver guidelines.
