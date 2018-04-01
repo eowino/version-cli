@@ -2,10 +2,18 @@
   "name": "version-cli",
   "version": "0.0.0",
   "description": "A CLI for updating the version numbers of files",
+  "author": "Evans Owino",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eowino/version-cli"
+  },
   "main": "index.js",
+  "bin": {
+    "version": "./bin/version"
+  },
   "scripts": {
     "test": "jest",
-    "test-watch": "npm run test -- --watch"
+    "test-watch": "npm run test -- --watch",
   },
   "directories": {
     "test": "test",
@@ -17,12 +25,11 @@
     "semver",
     "version",
     "bump",
-    "CLI"
+    "CLI",
+    "versioning"
   ],
-  "author": "Evans Owino",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/eowino/version-cli"
+  "engines": {
+    "node": ">=6"
   },
   "license": "MIT",
   "devDependencies": {
