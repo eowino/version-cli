@@ -79,7 +79,9 @@ const renameFiles = function renameFiles() {
     }
   });
 
-  log.log(log.success('\nDone ✔'));
+  if (!args.silent) {
+    log.log(log.success('\nDone ✔'));
+  }
   process.exit();
 };
 
@@ -112,7 +114,7 @@ if (args.to) {
   getVersionFromFile();
 }
 
-if (args.yes) {
+if (args.yes || args.silent) {
   renameFiles();
 } else {
   promptToContinue();
