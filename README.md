@@ -4,7 +4,7 @@
 
 [![npm version](https://badge.fury.io/js/version-cli.svg)](https://npmjs.org/package/version-cli "View this project on npm") 
 
-A CLI for updating the version numbers of files using the semver guidelines.
+A CLI for updating the version numbers of files using the [semver] guidelines.
 
 ## Prerequisites
 
@@ -48,3 +48,5 @@ Option              | Description
 ## License
 
 MIT
+
+[semver]: https://github.com/npm/node-semver
