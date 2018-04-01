@@ -1,6 +1,6 @@
 {
   "name": "version-cli",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A CLI for updating the version numbers of files",
   "author": "Evans Owino",
   "repository": {
