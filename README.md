@@ -6,6 +6,9 @@ A CLI for updating the version numbers of files
 
 This CLI requires Node 6.0.0 or higher.
 
+[![npm version](https://badge.fury.io/js/version-cli.svg)](https://npmjs.org/package/version-cli "View this project on npm")
+
+
 ## Installation
 
 **BEFORE YOU INSTALL:** please read the [prerequisites](#prerequisites)
