@@ -7,13 +7,12 @@
     "type": "git",
     "url": "https://github.com/eowino/version-cli"
   },
-  "main": "index.js",
   "bin": {
     "version": "./bin/version"
   },
   "scripts": {
     "test": "jest",
-    "test-watch": "npm run test -- --watch",
+    "test-watch": "npm run test -- --watch"
   },
   "directories": {
     "test": "test",

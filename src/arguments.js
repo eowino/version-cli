@@ -75,12 +75,6 @@ const getVersionFromFile = function getVersionFromFile(toVersion) {
   });
 };
 
-const getNewFileName = function getNewFileName(fileObject) {
-  const {url, query} = qr.parseUrl(fileObject.filename);
-  query['v'] = fileObject.nextVersion;
-  return `${url}?${qr.stringify(query)}`;
-};
-
 const renameFiles = function renameFiles() {
   _filesToChange.forEach(file => {
     const oldPath = file.filename;

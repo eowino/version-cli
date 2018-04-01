@@ -41,6 +41,7 @@ const getNewFileName = function getNewFileName(fileObject) {
 }
 
 module.exports = {
+  getVersionFromString,
   getVersion,
   nextVersion,
   versionIsValid,
