@@ -37,8 +37,8 @@ Option              | Description
 --minor, -m         |  increment minor version e.g 0.2.1 -> 0.3.0
 --major, -M         |  increment major version e.g 0.2.1 -> 1.0.0
 --prerelease, --pre |  increment a prerelease number e.g. 1.2.3-8 -> 1.2.3-9
---prepatch          |  increment patch and add prerelease e.g. 1.2.3 -> 2.3.4-0
---preminor          |  increment minor and add prerelease e.g. 1.2.3 -> 2.3.0-0
+--prepatch          |  increment patch and add prerelease e.g. 1.2.3 -> 1.2.4-0
+--preminor          |  increment minor and add prerelease e.g. 1.2.3 -> 1.3.0-0
 --premajor          |  increment major and add prerelease e.g. 1.2.3 -> 2.0.0-0
 
 **Please note** that `patch` is the default command used to increment versions
