@@ -31,6 +31,9 @@
   "engines": {
     "node": ">=6"
   },
+  "jest": {
+    "testURL": "http://localhost/"
+  },
   "license": "MIT",
   "devDependencies": {
     "eslint": "^4.19.1",
